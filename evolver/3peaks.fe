@@ -1,0 +1,113 @@
+// File created by createtriangulation.py
+// Length = 2 * Width
+
+PARAMETER Ak = 0.69345 // 2*pi*0.2 // Amplitude * wavenumber
+PARAMETER kk = 6 * sqrt(Ak^2 + 1) * EllipticE(1/(1+Ak^-2))
+PARAMETER Ampl = Ak/kk
+PARAMETER xm = 3/2*pi/kk // Should be 0.45 => 10% compression
+
+PARAMETER mh = 0
+
+// For resetting form_factors in refining
+define vertex attribute ref_coord real[3]
+define vertex attribute old_vid  integer
+define edge   attribute old_eid  integer
+
+define facet attribute poisson_ratio real
+define facet attribute form_factors real[3]
+quantity stretch energy method linear_elastic global
+quantity bend energy modulus 0.0001 method star_perp_sq_mean_curvature global
+
+boundary 1 parameters 1
+	x1: p1
+	x2: 0
+	x3: Ampl * cos(kk*p1)
+
+// Mirror plane constraints
+constraint x_mirror
+	formula: x = 0
+
+view_transform_generators 1
+// Reflection in x_mirror
+-1 0 0 0
+ 0 1 0 0 
+ 0 0 1 0
+ 0 0 0 1
+
+vertices
+7  0 boundary 1 fixed ref_coord {0 0 0}
+1  xm boundary 1 fixed ref_coord {1/2 0 0}
+2  0 0.500000 mh constraint x_mirror ref_coord {0 0.500000 0}
+3  xm 1 0 fixed ref_coord {1/2 1.000000 0}
+4  0 1.500000 mh constraint x_mirror ref_coord {0 1.500000 0}
+5  xm 2 0 fixed ref_coord {1/2 2.000000 0}
+6  0 2 mh constraint x_mirror ref_coord {0 2 0}
+
+edges
+11  1 7 boundary 1
+1  7 2 constraint x_mirror
+2  2 1
+3  1 3 fixed
+4  2 4 constraint x_mirror
+5  3 2
+6  4 3
+7  3 5 fixed
+8  4 6 constraint x_mirror
+9  5 4
+10  6 5
+
+faces
+5  11 1 2
+1  2 3 5
+2  4 6 5
+3  7 9 6
+4  8 10 9
+
+read
+
+set facet poisson_ratio 1/3
+set facet tension 0
+
+// Set form factors so initial cube is unstretched.
+set_form_factors := {
+foreach facet ff do 
+{ set ff.form_factors[1]  
+          (ff.vertex[2].ref_coord[1] - ff.vertex[1].ref_coord[1])^2
+        + (ff.vertex[2].ref_coord[2] - ff.vertex[1].ref_coord[2])^2
+        + (ff.vertex[2].ref_coord[3] - ff.vertex[1].ref_coord[3])^2;
+  set ff.form_factors[2]  
+          (ff.vertex[2].ref_coord[1] - ff.vertex[1].ref_coord[1])
+         *(ff.vertex[3].ref_coord[1] - ff.vertex[1].ref_coord[1])
+        + (ff.vertex[2].ref_coord[2] - ff.vertex[1].ref_coord[2])
+         *(ff.vertex[3].ref_coord[2] - ff.vertex[1].ref_coord[2])
+        + (ff.vertex[2].ref_coord[3] - ff.vertex[1].ref_coord[3])
+         *(ff.vertex[3].ref_coord[3] - ff.vertex[1].ref_coord[3]);
+  set ff.form_factors[3]  
+          (ff.vertex[3].ref_coord[1] - ff.vertex[1].ref_coord[1])^2
+        + (ff.vertex[3].ref_coord[2] - ff.vertex[1].ref_coord[2])^2
+        + (ff.vertex[3].ref_coord[3] - ff.vertex[1].ref_coord[3])^2;
+}
+}
+set_form_factors;
+
+transform_expr "a"
+
+// redefine the "r" command to adjust form factors.
+r :::= { 
+     set vertex old_vid id;
+     set edge old_eid id;
+     'r'; 
+     foreach vertex vv where old_vid == 0 do
+     { vv.ref_coord[1] := 
+          avg(vv.edge ee where old_eid != 0,sum(ee.vertex where old_vid != 0,
+                    ref_coord[1]));
+       vv.ref_coord[2] := 
+          avg(vv.edge ee where old_eid != 0,sum(ee.vertex where old_vid != 0,
+                    ref_coord[2]));
+       vv.ref_coord[3] := 
+          avg(vv.edge ee where old_eid != 0,sum(ee.vertex where old_vid != 0,
+                    ref_coord[3]));
+     };
+     set_form_factors;
+     recalc;
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Robert Schroll's Code</title>
+<meta charset="utf-8" />
+</head>
+
+<body>
+<h1>Code</h1>
+
+<p>Here are bits of code I've written over the years to accomplish some specific task.  Mostly I've put it up so that I can remember how I accomplished something when I need to do it again.  But maybe it'll be useful for you.  If it is, consider it to be released under the <a href="http://www.opensource.org/licenses/bsd-license.php">BSD license</a>, unless otherwise noted.</p>
+
+<h2>Reinteract Extensions</h2>
+<p><a href="http://www.reinteract.org/trac/">Reinteract</a> is an incredibly nifty way to use Python.  It gives you a worksheet into which you can enter Python code, and it keeps track of changes so that you can edit code and still get consistent results.  It also provides an extension mechanism by which you can embed arbitrary GTK widgets into the worksheet.</p>
+<dl>
+<dt><a href="http://rschroll.github.com/refigure2/">refigure2</a></dt>
+<dd>The refigure2 extension embeds <a href="http://matplotlib.sourceforge.net/">matplotlib</a> figures in the notebook, in a different way that the built-in replot.  See the <a href="http://rschroll.github.com/refigure2/">website</a> for more details.</dd>
+</dl>
+
+<h2>Geany Scripts</h2>
+<p><a href="http://www.geany.org/">Geany</a> is my current text editor of choice.  The <a href="http://plugins2.geany.org/geanylua/geanylua-intro.html">Lua</a> plugin for Geany allows you to write scripts (in <a href="http://www.lua.org/">Lua</a>) triggered within Geany.  I've written two:</p>
+<dl>
+<dt><a href="detach-tab.lua">detach-tab.lua</a></dt>
+<dd>Geany only offers a single window at a time, with a tabbed interface.  Somtimes I want to look at two files simultaneously.  This script fakes detaching a tab by closing the current tab and opening that file in a new Geany process.  This requires that the file be saved, and the undo buffer is lost, but it tends to work well enough in practice.</dd>
+<dt><a href="image-tag.lua">image-tag.lua</a></dt>
+<dd>Inserting a HTML image tag with the proper size can be a slight pain.  This script treats the word under the cursor as a filename, uses <a href="http://www.imagemagick.org/script/index.php">ImageMagick</a> to get the file size, and replaces the filename with a full image tag.</dd>
+</dl>
+
+<h2>Shell Scripts</h2>
+<p>Basically, a collection of one-off scripts that refused to die.  None wins style points, but they're all functional.</p>
+<dl>
+<dt><a href="backup.sh">backup.sh</a></dt>
+<dd>There are all sorts of <a href="http://www.mikerubel.org/computers/rsync_snapshots/">clever rolling backup solutions</a> out there, but I just wanted one that just stored the backup by date, letting me decide which to delete and which to keep.  This will backup all files in <tt>/home/</tt> to <tt>$BASEBACK/yyyymmdd/</tt>.  It must be run by root.</dd>
+<dt><a href="catpdf.sh">catpdf.sh</a></dt>
+<dd>The <a href="http://www.fizyka.umk.pl/nrbook/bookcpdf.html">Numerical Recipes</a> book comes as with each section as its own PDF file.  This script joins them together into a single PDF, properly stripping out the repeated pages.  Requires <a href="http://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/">pdftk</a>.</dd>
+<dt><a href="startSynergy.sh">startSynergy.sh</a></dt>
+<dd><a href="http://synergy-foss.org/">Synergy</a> is a nifty way to share a single mouse and keyboard among computers.  I use it to be able to control both my laptop and desktop with a full-size desktop keyboard.  Synergy transmits keypresses in the clear, so I feel much better about tunneling it though SSH.  This script does just that.  It checks if the synergy client or the SSH tunnel exists before creating a new one.  (This is for the client machine; the server is started as usual.)  The <tt>$knownIP</tt> variable contains a list of default servers to connect to, given the first three-quarters of the client's IP address.</dd>
+<dt><a href="synaptics.sh">synaptics.sh</a></dt>
+<dd>Every 18 months or so, Ubuntu feels the need to change how you configure your touchpad.  First, it was by x11.conf, then xorg.conf, then HAL, and now it's&hellip;well, I'm really not sure.  So I run this script at the beginning of my session.  This works in Ubuntu 9.10, but don't count on it not breaking in the future.</dd>
+<dt><a href="toggletouchpad.sh">toggletouchpad.sh</a></dt>
+<dd>My netbook doesn't have a hardware button to disable the touchpad.  So I bound this script to one of the function keys.</dd>
+</dl>
+
+<h2>Python Scripts</h2>
+<p><a href="http://www.python.org/">Python</a> is a <a href="http://xkcd.com/353/">wonderful</a> scripting language.  With <a href="http://numpy.scipy.org/">NumPy</a>, <a href="http://matplotlib.sourceforge.net/">matplotlib</a>, and <a href="http://www.scipy.org/">SciPy</a>, I've almost replaced Matlab in my scientific programming.  It's also good for scripts and user interfaces.</p>
+<dl>
+<dt><a href="disablescreensaver.py">disablescreensaver.py</a></dt>
+<dd>A little PyGTK app with a button to disable the screensaver.  Useful for giving presentations or watching Flash videos.  Requires <a href="http://www.pygtk.org/">PyGTK</a> and probably only works under <a href="http://www.gnome.org/">GNOME</a>.</dd>
+<dt><a href="sewrap.py">sewrap.py</a></dt>
+<dd>The <a href="http://www.susqu.edu/brakke/evolver/evolver.html">Surface Evolver</a> is a nifty bit of software for minimizing just about any energy you can imagine on a manifold.  It comes with its own language and interactive prompt, but this prompt doesn't have any line-editing capabilities.  This script wraps as readline shell around the Surface Evolver prompt, giving you line editing and a history.  It also gives you a variable named <tt>pid</tt> with the current process ID, useful for making unique filenames for backups, for example.  Requires <a href="http://cnswww.cns.cwru.edu/php/chet/readline/rltop.html">Readline</a>.</dd>
+</dl>
+</body>
+</html>

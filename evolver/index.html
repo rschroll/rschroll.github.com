@@ -1,0 +1,35 @@
+<html>
+<head>
+<title>Surface Evolver and Elastic Sheets</title>
+</head>
+
+<body>
+<h1>Using Surface Evolver to model elastic sheets</h1>
+<h2>Tutorial Files</h2>
+<dl>
+<dt><a href="pringle.fe">pringle.fe</a></dt>
+<dd>Solving for a minimal surface within a pringle-shaped boundary.</dd>
+<dt><a href="triangle1.fe">triangle1.fe</a></dt>
+<dd>The first example with linear elasticity.  The triangle starts off as isosceles, but with a form_factor for a right triangle.  Does not include the additional code to handle refinement.</dd>
+<dt><a href="triangle2.fe">triangle2.fe</a></dt>
+<dd>Updates triangle1 to include ref_coords for each vertex as well as the code to correctly set the form_factors when refined.</dd>
+<dt><a href="3peaks.fe">3peaks.fe</a></dt>
+<dd>A sample file that I actually used.  Significantly more complicated than the previous files, it includes both bending and stretching energies and a mirror symmetry plane.</dd>
+</dl>
+
+<h2>Useful (?) Scripts</h2>
+<p>These are scripts that I have written to simplify my life.  Perhaps they will help you.</p>
+<dl>
+<dt><a href="sewrap.py">sewrap.py</a></dt>
+<dd>A wrapper around the evolver prompt that adds line editing capabilities.  Probably only works on systems with GNU readline.  It's pretty simplistic, so occasionally it gets confused.</dd>
+<dt><a href="outputsurf.cmd">outputsurf.cmd</a></dt>
+<dd>A surface evolver command that outputs the current surface to a data file, in the form of a list of vertex locations and a list of facets.  First, load the command with <tt>read "outputsurf.cmd"</tt>, then write to file filename with <tt>outputsurf >> filename</tt>.</dd>
+<dt><a href="createtriangulation.py">createtriangulation.py</a>, <a href="createmirrortriangulation.py">createmirrortriangulation.py</a></dt>
+<dd>Creates the triangulation for a long, thin strip.  Expects an integer aspect ratio as an argument and prints to stdout.  createmirrortriangulation includes a mirror symmetry plane down the middle of the strip.</dd>
+<dt><a href="surface.py">surface.py</a></dt>
+<dd>Contains the EvolveSurf class, which handles importing the data file produced by outputsurf into Python.  Contains plotting functions which require...</dd>
+<dt><a href="plot3D.py">plot3D.py</a></dt>
+<dd>Functions for plotting triangulations with matplotlib in Python.  Despite the name, is only 2D at the moment.  If you have a matplotlib >= 0.99, uncomment the imports and comment out the <tt>raise NotImplementedError</tt> to get 3D plotting.</dd>
+</dl>
+</body>
+</html>
